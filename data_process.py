@@ -1,6 +1,5 @@
 from random import choice
 import json
-from bert4keras.tokenizers import Tokenizer
 import tensorflow as tf
 from tqdm import tqdm
 import numpy as np
