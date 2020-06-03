@@ -8,9 +8,9 @@ train_data = json.load(open('./data_trans/train_data_me.json', encoding='utf-8')
 dev_data = json.load(open('./data_trans/dev_data_me.json', encoding='utf-8'))
 
 num_class = 49
-lr = 0.005
+lr = 0.001
 num_epochs = 20
-batch_size = 16
+batch_size = 32
 
 class data_loader():
     def __init__(self):
@@ -54,6 +54,7 @@ class ER_model(tf.keras.Model):
         self.dense_1 = tf.keras.layers.Dense(num_class)
         self.dense_2 = tf.keras.layers.Dense(num_class)
         self.average = tf.keras.layers.Average()
+
     def call(self, x_lstm, position_s, position_e):
         add_encode = np.zeros_like(x_lstm)
         for i, k in enumerate(position_s):
