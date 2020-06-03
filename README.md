@@ -46,8 +46,23 @@ BERT输出+softmax提取实体；BERT输出+sigmoid提取关系。
 构建模型输入数据，最大长度128，BERT输入又三部分构成[文本token, mask_token, segment_token]，实体label， 关系label；
 BERT输出+sigmoid提取关系。
 
-模型使用3000条训练数据，最后对测试集前100进行验证，模型没有跑完，前10个epoch时，模型F1已经超过85%。  
+模型使用3000条训练数据，最后对测试集前100进行验证，模型没有跑完，前10个epoch时，模型F1已经超过85%。
 
-# 总结
-让大家了解下多头选择策略下的关系抽取问题。
-  
+
+
+# 新增模型
+
+![A Novel Cascade Binary Tagging Framework for Relational Triple Extraction](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20200603154644370.png)  
+
+A Novel Cascade Binary Tagging Framework for Relational Triple Extraction[ACL_2020]，操作上主要是先预测Subject, 然后将关系建模为头实体(Subjects)映射到尾实体(Object)的函数, 进行relation-object同时预测。采用指针标注的方式，可以有效解决多个三元组重叠的实体关系抽取问题。
+
+模型实现程序：Entity_Relationship_version1.py
+
+用BiGru代替了Bert结构(纯粹为了节省时间)
+
+
+
+
+
+
+
