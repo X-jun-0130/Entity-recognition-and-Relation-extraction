@@ -37,7 +37,7 @@ ner:预测subject
 perdicate:预测object和relation矩阵(128*num_class)
 '''
 def get_input(data):
-    input_x, input_ner, input_re1, input_re2, seq_len, position_mask = [], [], [], [], [], []
+    input_x, input_ner1, input_ner2, input_re1, input_re2, position_s, position_e = [], [], [], [], [], [], []
     for l in tqdm(range(64000)):
         items = {}
         line = data[l]
@@ -58,20 +58,21 @@ def get_input(data):
         if items:
             input_x.append(text2id)
             #seq_len.append(len(text2id))
-            ner_s = np.zeros(len(text2id))
-            p_mask = np.zeros(len(text2id))
+            ner_s1 = np.zeros(128, dtype=np.int32)
+            ner_s2 = np.zeros(128, dtype=np.int32)
             for j in items:
-                ner_s[j[0]] = 1
-                ner_s[j[0]+1:j[1]] = 2
+                ner_s1[j[0]] = 1
+                ner_s2[j[1]-1] = 1
             #print(ner_s)
-            input_ner.append(ner_s)
+            input_ner1.append(ner_s1)
+            input_ner2.append(ner_s2)
             k1, k2 = np.array(list(items.keys())).T
             k1 = choice(k1)
             k2 = choice(k2[k2 >= k1])
             er_s1 = np.zeros((128, num_classes), dtype=np.float32)
             er_s2 = np.zeros((128, num_classes), dtype=np.float32)
-            p_mask[k1:k2] = 1
-            position_mask.append(p_mask)
+            position_s.append(k1)
+            position_e.append(k2 - 1)
             for j in items.get((k1, k2), []):
                 er_s1[j[0]][j[2]] = 1
                 er_s2[j[1] - 1][j[2]] = 1
@@ -79,20 +80,26 @@ def get_input(data):
             input_re2.append(er_s2)
 
     #seq_len = np.array(seq_len, dtype=np.int32)
-    input_re1 = np.array(input_re1, dtype=np.float32)
-    input_re2 = np.array(input_re2, dtype=np.float32)
+    input_re1 = np.array(input_re1, dtype=np.int32)
+    input_re2 = np.array(input_re2, dtype=np.int32)
     input_x = tf.keras.preprocessing.sequence.pad_sequences(input_x, max_len, padding='post', truncating='post')
-    input_ner = tf.keras.preprocessing.sequence.pad_sequences(input_ner, max_len, padding='post', truncating='post')
-    position_mask = tf.keras.preprocessing.sequence.pad_sequences(position_mask, max_len, padding='post', truncating='post')
-    return input_x, input_ner, input_re1, input_re2,  position_mask
+    input_ner1 = np.array(input_ner1, dtype=np.int32)
+    input_ner2 = np.array(input_ner2, dtype=np.int32)
+    position_s = np.array(position_s, dtype=np.int32)
+    position_e = np.array(position_e, dtype=np.int32)
+    return input_x, input_ner1, input_ner2, input_re1, input_re2, position_s, position_e
 
-# train_data = json.load(open('train_data_me.json', encoding='utf-8'))
-# input_x, input_ner, input_re1, input_re2,  position_mask = get_input(train_data)
-# print(train_data[0])
-# print(input_x[0])
-# print(input_ner[0])
-# print(input_re1[0])
-# print(input_re2[0])
+# dev_data = json.load(open('./data_trans/dev_data_me.json', encoding='utf-8'))
+# input_x, input_ner1, input_ner2, input_re1, input_re2, position_s, position_e = get_input(dev_data)
+# print(input_ner1[1])
+# print(input_ner1[2])
+# print(input_ner2[1])
+# print(input_ner2[2])
+# input_ner1 = tf.one_hot(input_ner1[10], depth=2, dtype=tf.float32)
+# print(input_ner1)
+# input_ner1 = tf.argmax(input_ner1, axis=-1)
+# input_ner1 = np.array(input_ner1, dtype=np.float32)
+# print(np.where(input_ner1>0.5))
 '''
 ner:预测subject/object
 perdicate:预测头部关系矩阵(128*128)
