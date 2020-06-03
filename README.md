@@ -60,6 +60,8 @@ A Novel Cascade Binary Tagging Framework for Relational Triple Extraction[ACL_20
 
 用BiGru代替了Bert结构(纯粹为了节省时间)
 
+20个epoch，F1值最高68(仅仅用BiGru，数值感觉蛮不错的)，感觉还可以迭代下去，loss还可以继续下降。
+
 
 
 
