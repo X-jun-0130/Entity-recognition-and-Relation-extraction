@@ -1,5 +1,5 @@
 实体关系抽取是信息抽取任务中非常基础且必要的工作。实体关系主要有一对一、多对一、多对多等。今天从实践的角度介绍一下实体关系抽取的相关工作。仅为了简单介绍实体关系抽取相关的实践过程，模型我没有进行深度调优，故不适用实际生产中。仅在此介绍下方法，模型主要结构使用的双向GRU网络， 以及BERT。![Joint entity recognition and relation extraction as a multi-head selection problem](https://upload-images.jianshu.io/upload_images/12779090-f6b57e875738d096.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)  
-模型依据论文“Joint entity recognition and relation extraction as a multi-head selection problem”进行改造而成，舍弃了Label Embeddings部分；没有使用CRF层进行实体的识别，主要是没有发现与TF2.0搭配的CRF库，进而用Softmax代替。 
+模型依据论文“Joint entity recognition and relation extraction as a multi-head selection problem”进行改造而成，舍弃了Label Embeddings部分；没有使用CRF层进行实体的识别，主要是没有发现与TF2.0搭配的CRF库，进而用Softmax代替。 (tf2.2可以和Addons中crf搭配使用)
 
 ## 数据来源
 百度2019语言与智能技术竞赛信息抽取  
